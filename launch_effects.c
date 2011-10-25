@@ -146,6 +146,10 @@ void launch_effects() {
     effect_ripples(100, 10);
 #endif
 
+#if EFFECT_STRING_FLY == 1
+    clear_and_wait();
+    effect_str_fly();
+#endif 
 }
 
 #endif // __PIC_LEDCUBE_LAUNCH_C

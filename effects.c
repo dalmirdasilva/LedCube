@@ -910,4 +910,45 @@ void effect_ripples(unsigned char iterations, unsigned char delay) {
 }
 #endif
 
+#if EFFECT_STRING_FLY
+static unsigned char str_fly[][] = {
+    {0xff,0x9,0x9,0x9,0x1},
+    {0x1,0x1,0xff,0x1,0x1},
+    {0xff,0x89,0x89,0x89,0x81},
+    {0xff,0x89,0x89,0x89,0x81}
+};
+
+void send_char(unsigned char *char_data) {
+    unsigned int l, i;
+    for(l = 0; l < 8; l++) {
+        for(i = 0; i < 5; i++) {
+            if(char_data[i] & 1 << l) {
+                setvoxel(2 + i, 0, l);
+            } else {
+                clrvoxel(2 + i, 0, l);
+            }
+        }
+    }
+}
+
+void shift_cube() {
+    unsigned int lat, lay;
+    for(lat = 7; lat >= 1; lat--) {
+        for(lay = 0; lay < 8; lay++) {
+            cube[lay][lat] = cube[lay][lat-1];
+        }
+        delay_ms(1000);
+    }
+}
+
+void effect_str_fly() {
+    unsigned char i, how_many_chars = 4;
+    for(i = 0; i < how_many_chars; i++) {
+        send_char(str_fly[i]);
+        shift_cube();
+    }    
+}
+#endif
+
+
 #endif // __PIC_LEDCUBE_EFFECTS_C
