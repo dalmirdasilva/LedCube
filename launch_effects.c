@@ -149,7 +149,14 @@ void launch_effects() {
 #if EFFECT_STRING_FLY == 1
     clear_and_wait();
     effect_str_fly();
-#endif 
+#endif
+
+#if EFFECT_CLOSING_BOX == 1
+    clear_and_wait();
+    effect_closing_box();
+    
+#endif
+	
 }
 
 #endif // __PIC_LEDCUBE_LAUNCH_C

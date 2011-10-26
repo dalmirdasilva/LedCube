@@ -910,43 +910,82 @@ void effect_ripples(unsigned char iterations, unsigned char delay) {
 }
 #endif
 
-#if EFFECT_STRING_FLY
-static unsigned char str_fly[][] = {
+#if EFFECT_STRING_FLY == 1
+char str_fly[][] = {
     {0xff,0x9,0x9,0x9,0x1},
     {0x1,0x1,0xff,0x1,0x1},
     {0xff,0x89,0x89,0x89,0x81},
     {0x7e,0x81,0x81,0x81,0x81}
+    
 };
 
-void send_char(unsigned char *char_data) {
-    unsigned int l, i;
+void send_char(char *char_data) {
+    uint8_t l, byte_index;
     for(l = 7; l >= 0; l--) {
-        for(i = 0; i < 5; i++) {
-            if(char_data[i] & 1 << (7 - l)) {
-                setvoxel(2 + i, 0, l);
+        for(byte_index = 4; byte_index >= 0; byte_index--) {
+            if(char_data[byte_index] & (1 << (7 - l))) {
+                setvoxel(2 + byte_index, 0, l);
             } else {
-                clrvoxel(2 + i, 0, l);
+                clrvoxel(2 + byte_index, 0, l);
             }
         }
     }
 }
 
-void shift_cube() {
-    unsigned int lat, lay;
-    for(lat = 7; lat >= 1; lat--) {
+void shift_cube(uint8_t iterations) {
+    uint8_t it, lat, lay;
+    for(it = 0; it < iterations; it++) {
         for(lay = 0; lay < 8; lay++) {
-            cube[lay][lat - 1] = cube[lay][lat];
+            for(lat = 7; lat >= 1; lat--) {
+                cube[lay][lat - 1] = cube[lay][lat];
+            }
+            cube[lay][7] = 0x00;
         }
         delay_ms(2000);
     }
 }
 
 void effect_str_fly() {
-    unsigned char i;
+    uint8_t i;
     for(i = 0; i < 4; i++) {
         send_char(str_fly[i]);
-        shift_cube();
+        shift_cube(8);
     }    
+}
+#endif
+
+#if EFFECT_CLOSING_BOX == 1
+void effect_closing_box() {
+    uint8_t i, j, k;
+    fill(0x00);
+	for(j = 0; j < 8; j++) {
+		cube[0][j] |= 0xff;
+		delay_ms(1000);
+	}
+    for(i = 0; i < 8; i++) {
+		cube[i][0] = 0xff;
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x01;
+		}
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		cube[i][7] = 0xff;
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x80;
+		}
+		delay_ms(1000);
+    }
+	for(j = 0; j < 8; j++) {
+		cube[7][j] |= 0xff;
+		delay_ms(1000);
+	}
 }
 #endif
 
