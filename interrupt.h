@@ -14,6 +14,7 @@ DEF_INTHIGH(high_interrupt_vector)
 END_DEF
 
 uint16_t ps = 0;
+uint8_t layer = 0;
 
 /*
  * Multiplexer/framebuffer routine
@@ -34,8 +35,12 @@ SIGHANDLER(timer_0_handler) {
         ps = 0;
     }
             
-    // Set OE high, disabling all outputs on latch array. 
-    //LATAbits.LATA0 = 1;
+    // Disabling all layers. 
+    LAYER_ENABLE_PIN = 0;
+
+    // Increment the curren_layer counter so that the next layer is
+    // drawn the next time this function runs.
+    LAYER_SELECT_PORT++;
 
     // Loop through all 8 bytes of data in the current layer
     // and latch it onto the cube.
@@ -48,12 +53,9 @@ SIGHANDLER(timer_0_handler) {
         LATCH_SELECT_PORT++;
     }
 
-    // Enabling outputs on the latch array
-    //LATAbits.LATA0 = 0;
-   
-    // Increment the curren_layer counter so that the next layer is
-    // drawn the next time this function runs.
-    LAYER_SELECT_PORT++;
+
+    // Enable layers. 
+    LAYER_ENABLE_PIN = 1;
 }
 
 #endif // __PIC_LEDCUBE_INTERRUPT_H

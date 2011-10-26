@@ -20,8 +20,7 @@
 #define LATCH_SELECT_PORT   LATD
 #define LAYER_SELECT_PORT   LATE
 
-#define LAYER_ENABLE_PIN    LATD7bits.LATD7        
-#define LATCH_ENABLE_PIN    LATD7bits.LATD6
+#define LAYER_ENABLE_PIN    LATAbits.LATA3
 
 #define TRIS_DATA_BUS       TRISB
 #define TRIS_LAYER          TRISE

@@ -69,6 +69,10 @@ void init_io() {
     TRISAbits.TRISA1 = 0;
     TRISAbits.TRISA2 = 0;
     
+    // Layer select
+    TRISAbits.TRISA3 = 0;
+
+
     // Set data bus off
     DATA_BUS = 0x00;
 }
