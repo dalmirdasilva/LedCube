@@ -13,16 +13,36 @@
 
 #if EFFECT_TEST == 1
 void effect_test(void) {
-    int z, x, y, i;
-    for(z = 0; z < 8; z++) {
-        for(i = 0; i < 100; i++) {
-            x = sinf(i / 8) * 2 + 3.5;
-            y = cosf(i / 8) * 2 + 3.5;
-            setvoxel(x, y, z);
-            delay_ms(100);
-            fill(0x00);
-        }
+    uint8_t i, j, k;
+    fill(0x00);
+	for(j = 0; j < 8; j++) {
+		cube[0][j] |= 0xff;
+		delay_ms(1000);
+	}
+    for(i = 0; i < 8; i++) {
+		cube[i][0] = 0xff;
+		delay_ms(1000);
     }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x01;
+		}
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		cube[i][7] = 0xff;
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x80;
+		}
+		delay_ms(1000);
+    }
+	for(j = 0; j < 8; j++) {
+		cube[7][j] |= 0xff;
+		delay_ms(1000);
+	}
 }
 #endif
 
@@ -48,7 +68,7 @@ void effect_planboing(int plane, int speed) {
 void effect_blinky2() {
     int i, r;
     fill(0x00);
-    for (r = 0; r < 2; r++) {
+    for (r = 0; r < 4; r++) {
         i = 750;
         while (i > 0) {
             fill(0x00);
@@ -57,7 +77,7 @@ void effect_blinky2() {
             delay_ms(100);
             i = i - (15 + (1000 / (i / 10)));
         }
-        delay_ms(1000);
+        delay_ms(3000);
         i = 750;
         while (i > 0) {
             fill(0x00);
@@ -956,36 +976,16 @@ void effect_str_fly() {
 
 #if EFFECT_CLOSING_BOX == 1
 void effect_closing_box() {
-    uint8_t i, j, k;
-    fill(0x00);
-	for(j = 0; j < 8; j++) {
-		cube[0][j] |= 0xff;
-		delay_ms(1000);
-	}
-    for(i = 0; i < 8; i++) {
-		cube[i][0] = 0xff;
-		delay_ms(1000);
+    int z, x, y, i;
+    for(z = 0; z < 8; z++) {
+        for(i = 0; i < 100; i++) {
+            x = sinf(i / 8) * 2 + 3.5;
+            y = cosf(i / 8) * 2 + 3.5;
+            setvoxel(x, y, z);
+            delay_ms(100);
+            fill(0x00);
+        }
     }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x01;
-		}
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		cube[i][7] = 0xff;
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x80;
-		}
-		delay_ms(1000);
-    }
-	for(j = 0; j < 8; j++) {
-		cube[7][j] |= 0xff;
-		delay_ms(1000);
-	}
 }
 #endif
 

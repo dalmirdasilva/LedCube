@@ -116,7 +116,7 @@ void delay_ms(uint16_t x) {
     uint8_t y, z;
     for(; x > 0 ; x--){
         for( y = 0 ; y < 40 ; y++){
-            for( z = 0 ; z < 10 ; z++){
+            for( z = 0 ; z < 7 ; z++){
                 __asm nop __endasm;
             }
         }
