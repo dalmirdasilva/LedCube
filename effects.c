@@ -13,36 +13,16 @@
 
 #if EFFECT_TEST == 1
 void effect_test(void) {
-    uint8_t i, j, k;
-    fill(0x00);
-	for(j = 0; j < 8; j++) {
-		cube[0][j] |= 0xff;
-		delay_ms(1000);
-	}
-    for(i = 0; i < 8; i++) {
-		cube[i][0] = 0xff;
-		delay_ms(1000);
+    int z, x, y, i;
+    for(z = 0; z < 8; z++) {
+        for(i = 0; i < 100; i++) {
+            x = sinf(i / 8) * 2 + 3.5;
+            y = cosf(i / 8) * 2 + 3.5;
+            setvoxel(x, y, z);
+            delay_ms(100);
+            fill(0x00);
+        }
     }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x01;
-		}
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		cube[i][7] = 0xff;
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x80;
-		}
-		delay_ms(1000);
-    }
-	for(j = 0; j < 8; j++) {
-		cube[7][j] |= 0xff;
-		delay_ms(1000);
-	}
 }
 #endif
 
@@ -936,11 +916,10 @@ char str_fly[][] = {
     {0x1,0x1,0xff,0x1,0x1},
     {0xff,0x89,0x89,0x89,0x81},
     {0x7e,0x81,0x81,0x81,0x81}
-    
 };
 
 void send_char(char *char_data) {
-    uint8_t l, byte_index;
+    int8_t l, byte_index;
     for(l = 7; l >= 0; l--) {
         for(byte_index = 4; byte_index >= 0; byte_index--) {
             if(char_data[byte_index] & (1 << (7 - l))) {
@@ -952,40 +931,50 @@ void send_char(char *char_data) {
     }
 }
 
-void shift_cube(uint8_t iterations) {
-    uint8_t it, lat, lay;
-    for(it = 0; it < iterations; it++) {
-        for(lay = 0; lay < 8; lay++) {
-            for(lat = 7; lat >= 1; lat--) {
-                cube[lay][lat - 1] = cube[lay][lat];
-            }
-            cube[lay][7] = 0x00;
-        }
-        delay_ms(2000);
-    }
-}
-
 void effect_str_fly() {
-    uint8_t i;
+    int8_t i, j;
     for(i = 0; i < 4; i++) {
         send_char(str_fly[i]);
-        shift_cube(8);
+        for(j = 0; j < 8; j++) {
+            shift(AXIS_X, 1);
+            delay_ms(500);
+        }
     }    
 }
 #endif
 
 #if EFFECT_CLOSING_BOX == 1
 void effect_closing_box() {
-    int z, x, y, i;
-    for(z = 0; z < 8; z++) {
-        for(i = 0; i < 100; i++) {
-            x = sinf(i / 8) * 2 + 3.5;
-            y = cosf(i / 8) * 2 + 3.5;
-            setvoxel(x, y, z);
-            delay_ms(100);
-            fill(0x00);
-        }
+int8_t i, j;
+    fill(0x00);
+    for(j = 0; j < 8; j++) {
+		cube[0][j] |= 0xff;
+		delay_ms(1000);
+	}
+    for(i = 0; i < 8; i++) {
+		cube[i][0] = 0xff;
+		delay_ms(1000);
     }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x01;
+		}
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		cube[i][7] = 0xff;
+		delay_ms(1000);
+    }
+    for(i = 0; i < 8; i++) {
+		for(j = 0; j < 8; j++) {
+			cube[i][j] |= 0x80;
+		}
+		delay_ms(1000);
+    }
+	for(j = 0; j < 8; j++) {
+		cube[7][j] |= 0xff;
+		delay_ms(1000);
+	}
 }
 #endif
 

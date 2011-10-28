@@ -11,20 +11,17 @@
 #include "draw.h"
 
 // This function validates that we are drawing inside the cube.
-
 unsigned char inrange(int x, int y, int z) {
     if (x >= 0 && x < CUBE_SIZE && y >= 0 && y < CUBE_SIZE && z >= 0 && z < CUBE_SIZE) {
         return 1;
-    } else {
-
-        // One of the coordinates was outside the cube.
-        return 0;
     }
+    
+    // One of the coordinates was outside the cube.
+    return 0;
 }
 
 // Returns a byte with a row of 1's drawn in it.
 // byteline(2, 5) gives 0b00111100
-
 char byteline(int start, int end) {
     return ((0xff << start) & ~(0xff << (end + 1)));
 }
@@ -108,7 +105,7 @@ void argorder(int ix1, int ix2, int *ox1, int *ox2) {
 void setplane_z(int z) {
     int i;
     if (z >= 0 && z < CUBE_SIZE) {
-        for(i = 0; i < CUBE_SIZE; i++) {
+        for (i = 0; i < CUBE_SIZE; i++) {
             cube[z][i] = 0xff;
         }
     }
@@ -118,7 +115,7 @@ void setplane_z(int z) {
 void clrplane_z(int z) {
     int i;
     if (z >= 0 && z < CUBE_SIZE) {
-        for(i = 0; i < CUBE_SIZE; i++) {
+        for (i = 0; i < CUBE_SIZE; i++) {
             cube[z][i] = 0x00;
         }
     }
@@ -128,8 +125,8 @@ void setplane_x(int x) {
     int z;
     int y;
     if (x >= 0 && x < CUBE_SIZE) {
-        for(z = 0; z < CUBE_SIZE; z++) {
-            for(y = 0; y < CUBE_SIZE; y++) {
+        for (z = 0; z < CUBE_SIZE; z++) {
+            for (y = 0; y < CUBE_SIZE; y++) {
                 cube[z][y] |= (1 << x);
             }
         }
@@ -140,8 +137,8 @@ void clrplane_x(int x) {
     int z;
     int y;
     if (x >= 0 && x < CUBE_SIZE) {
-        for(z = 0; z < CUBE_SIZE; z++) {
-            for(y = 0; y < CUBE_SIZE; y++) {
+        for (z = 0; z < CUBE_SIZE; z++) {
+            for (y = 0; y < CUBE_SIZE; y++) {
                 cube[z][y] &= ~(1 << x);
             }
         }
@@ -151,7 +148,7 @@ void clrplane_x(int x) {
 void setplane_y(int y) {
     int z;
     if (y >= 0 && y < CUBE_SIZE) {
-        for(z = 0; z < CUBE_SIZE; z++) {
+        for (z = 0; z < CUBE_SIZE; z++) {
             cube[z][y] = 0xff;
         }
     }
@@ -160,7 +157,7 @@ void setplane_y(int y) {
 void clrplane_y(int y) {
     int z;
     if (y >= 0 && y < CUBE_SIZE) {
-        for(z = 0; z < CUBE_SIZE; z++) {
+        for (z = 0; z < CUBE_SIZE; z++) {
             cube[z][y] = 0x00;
         }
     }
@@ -204,8 +201,8 @@ void clrplane(char axis, unsigned char i) {
 void fill(unsigned char pattern) {
     int z;
     int y;
-    for(z = 0; z < CUBE_SIZE; z++) {
-        for(y = 0; y < CUBE_SIZE; y++) {
+    for (z = 0; z < CUBE_SIZE; z++) {
+        for (y = 0; y < CUBE_SIZE; y++) {
             cube[z][y] = pattern;
         }
     }
@@ -214,8 +211,8 @@ void fill(unsigned char pattern) {
 void tmpfill(unsigned char pattern) {
     int z;
     int y;
-    for(z = 0; z < CUBE_SIZE; z++) {
-        for(y = 0; y < CUBE_SIZE; y++) {
+    for (z = 0; z < CUBE_SIZE; z++) {
+        for (y = 0; y < CUBE_SIZE; y++) {
             fb[z][y] = pattern;
         }
     }
@@ -228,8 +225,8 @@ void box_filled(int x1, int y1, int z1, int x2, int y2, int z2) {
     argorder(x1, x2, &x1, &x2);
     argorder(y1, y2, &y1, &y2);
     argorder(z1, z2, &z1, &z2);
-    for(iz = z1; iz <= z2; iz++) {
-        for(iy = y1; iy <= y2; iy++) {
+    for (iz = z1; iz <= z2; iz++) {
+        for (iy = y1; iy <= y2; iy++) {
             cube[iz % CUBE_SIZE][iy % CUBE_SIZE] |= byteline(x1, x2);
         }
     }
@@ -242,8 +239,8 @@ void box_walls(int x1, int y1, int z1, int x2, int y2, int z2) {
     argorder(x1, x2, &x1, &x2);
     argorder(y1, y2, &y1, &y2);
     argorder(z1, z2, &z1, &z2);
-    for(iz = z1; iz <= z2; iz++) {
-        for(iy = y1; iy <= y2; iy++) {
+    for (iz = z1; iz <= z2; iz++) {
+        for (iy = y1; iy <= y2; iy++) {
             if (iy == y1 || iy == y2 || iz == z1 || iz == z2) {
                 cube[iz % CUBE_SIZE][iy % CUBE_SIZE] = byteline(x1, x2);
             } else {
@@ -269,7 +266,7 @@ void box_wireframe(int x1, int y1, int z1, int x2, int y2, int z2) {
     cube[z2][y2] = byteline(x1, x2);
 
     // Lines along Y axis
-    for(iy = y1; iy <= y2; iy++) {
+    for (iy = y1; iy <= y2; iy++) {
         setvoxel(x1, iy, z1);
         setvoxel(x1, iy, z2);
         setvoxel(x2, iy, z1);
@@ -277,7 +274,7 @@ void box_wireframe(int x1, int y1, int z1, int x2, int y2, int z2) {
     }
 
     // Lines along Z axis
-    for(iz = z1; iz <= z2; iz++) {
+    for (iz = z1; iz <= z2; iz++) {
         setvoxel(x1, y1, iz);
         setvoxel(x1, y2, iz);
         setvoxel(x2, y1, iz);
@@ -344,7 +341,7 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2) {
     }
 
     // For each step of x, y increments by:
-    for(x = x1; x <= x2; x++) {
+    for (x = x1; x <= x2; x++) {
         y = (xy * (x - x1)) + y1;
         z = (xz * (x - x1)) + z1;
         setvoxel(x, y, z);
@@ -365,15 +362,15 @@ void shift(char axis, int direction) {
     int ii, iii;
     int state;
 
-    for(i = 0; i < CUBE_SIZE; i++) {
+    for (i = 0; i < CUBE_SIZE; i++) {
         if (direction == -1) {
             ii = i;
         } else {
             ii = (7 - i);
         }
 
-        for(x = 0; x < CUBE_SIZE; x++) {
-            for(y = 0; y < CUBE_SIZE; y++) {
+        for (x = 0; x < CUBE_SIZE; x++) {
+            for (y = 0; y < CUBE_SIZE; y++) {
                 if (direction == -1) {
                     iii = ii + 1;
                 } else {
@@ -404,8 +401,8 @@ void shift(char axis, int direction) {
         i = 0;
     }
 
-    for(x = 0; x < CUBE_SIZE; x++) {
-        for(y = 0; y < CUBE_SIZE; y++) {
+    for (x = 0; x < CUBE_SIZE; x++) {
+        for (y = 0; y < CUBE_SIZE; y++) {
             if (axis == AXIS_Z) {
                 clrvoxel(x, y, i);
             }
@@ -423,11 +420,13 @@ void shift(char axis, int direction) {
 void mirror_y() {
     unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
     unsigned char x, y, z;
-    memcpy(buffer, cube, CUBE_BYTES); // copy the current cube into a buffer.
+    
+    // copy the current cube into a buffer.
+    memcpy(buffer, cube, CUBE_BYTES);
     fill(0x00);
-    for(z = 0; z < CUBE_SIZE; z++) {
-        for(y = 0; y < CUBE_SIZE; y++) {
-            for(x = 0; x < CUBE_SIZE; x++) {
+    for (z = 0; z < CUBE_SIZE; z++) {
+        for (y = 0; y < CUBE_SIZE; y++) {
+            for (x = 0; x < CUBE_SIZE; x++) {
                 if (buffer[z][y] & (0x01 << x)) {
                     setvoxel(x, CUBE_SIZE - 1 - y, z);
                 }
@@ -440,10 +439,12 @@ void mirror_y() {
 void mirror_x() {
     unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
     unsigned char y, z;
-    memcpy(buffer, cube, CUBE_BYTES); // copy the current cube into a buffer.
+    
+    // copy the current cube into a buffer.
+    memcpy(buffer, cube, CUBE_BYTES);
     fill(0x00);
-    for(z = 0; z < CUBE_SIZE; z++) {
-        for(y = 0; y < CUBE_SIZE; y++) {
+    for (z = 0; z < CUBE_SIZE; z++) {
+        for (y = 0; y < CUBE_SIZE; y++) {
 
             // This will break with different buffer sizes..
             cube[z][y] = flipbyte(buffer[z][y]);
@@ -455,9 +456,11 @@ void mirror_x() {
 void mirror_z() {
     unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
     unsigned char z, y;
-    memcpy(buffer, cube, CUBE_BYTES); // copy the current cube into a buffer.
-    for(y = 0; y < CUBE_SIZE; y++) {
-        for(z = 0; z < CUBE_SIZE; z++) {
+    
+    // copy the current cube into a buffer.
+    memcpy(buffer, cube, CUBE_BYTES);
+    for (y = 0; y < CUBE_SIZE; y++) {
+        for (z = 0; z < CUBE_SIZE; z++) {
             cube[CUBE_SIZE - 1 - z][y] = buffer[z][y];
         }
     }

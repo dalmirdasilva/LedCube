@@ -7,7 +7,7 @@
 #ifndef __PIC_LEDCUBE_EFFECT_SWITCH_H
 #define __PIC_LEDCUBE_EFFECT_SWITCH_H 1 
 
-#define EFFECT_TEST                  1
+#define EFFECT_TEST                  0
 #define EFFECT_RAIN                  1
 #define EFFECT_PLANBOING             1 // moving planes
 #define EFFECT_BLINKY                1 // blinking and fast
@@ -28,7 +28,7 @@
 #define EFFECT_LINES                 0
 #define EFFECT_RIPPLES               0
 #define EFFECT_STRING_FLY            0
-#define EFFECT_CLOSING_BOX			 0
+#define EFFECT_CLOSING_BOX			 1
 
 
 #endif // __PIC_LEDCUBE_EFFECT_SWITCH_H
