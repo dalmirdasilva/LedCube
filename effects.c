@@ -936,7 +936,7 @@ void effect_str_fly() {
     for(i = 0; i < 4; i++) {
         send_char(str_fly[i]);
         for(j = 0; j < 8; j++) {
-            shift(AXIS_X, 1);
+            shift(AXIS_Y, 1);
             delay_ms(500);
         }
     }    
