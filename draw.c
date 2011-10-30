@@ -10,54 +10,87 @@
 #include <string.h>
 #include "draw.h"
 
-// This function validates that we are drawing inside the cube.
-unsigned char inrange(int x, int y, int z) {
+/**
+ * This function validates that we are drawing inside the cube.
+ * 
+ * @param   The cube coordinates
+ * @return  boolean
+ */
+uint8_t in_range(int8_t x, int8_t y, int8_t z) {
     if (x >= 0 && x < CUBE_SIZE && y >= 0 && y < CUBE_SIZE && z >= 0 && z < CUBE_SIZE) {
         return 1;
     }
-    
-    // One of the coordinates was outside the cube.
     return 0;
 }
 
-// Returns a byte with a row of 1's drawn in it.
-// byteline(2, 5) gives 0b00111100
-char byteline(int start, int end) {
+/**
+ * Returns a byte with a row of 1's drawn in it.
+ * e.g.: byte_line(2, 5) gives 0b00111100
+ * 
+ * @param   The start bit
+ * @param   The end bit
+ * @return  char 
+ */
+int8_t byte_line(int8_t start, int8_t end) {
     return ((0xff << start) & ~(0xff << (end + 1)));
 }
 
-// Set a single voxel to ON
-void setvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
+/**
+ * Set a single voxel to ON
+ *
+ * @param   The cube coordenates
+ * @reurn   void 
+ */
+void set_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
         cube[z][y] |= (1 << x);
     }
 }
 
-// Set a single voxel in the temporary cube buffer to ON
-void tmpsetvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
-        fb[z][y] |= (1 << x);
+/**
+ * Set a single voxel in the temporary cube buffer to ON
+ * 
+ * @param   The cube coordenates
+ * @return  void
+ */
+void tmp_set_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
+        fb_cube[z][y] |= (1 << x);
     }
 }
 
-// Set a single voxel to OFF
-void clrvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
+/**
+ * Set a single voxel to OFF
+ * 
+ * @param   The cube coordenates
+ * @return  void
+ */
+void clr_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
         cube[z][y] &= ~(1 << x);
     }
 }
 
-// Set a single voxel to OFF
-void tmpclrvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
-        fb[z][y] &= ~(1 << x);
+/**
+ * Set a single voxel to OFF
+ * 
+ * @param   The cube coordenates
+ * @return  void
+ */
+void tmp_clr_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
+        fb_cube[z][y] &= ~(1 << x);
     }
 }
 
-// Get the current status of a voxel
-
-unsigned char getvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
+/**
+ * Get the current status of a voxel
+ * 
+ * @param   The cube coordenates
+ * @return  boolean
+ */
+uint8_t get_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
         if (cube[z][y] & (1 << x)) {
             return 1;
         } else {
@@ -68,139 +101,207 @@ unsigned char getvoxel(int x, int y, int z) {
     }
 }
 
-// In some effect we want to just take bool and write it to a voxel
-// this function calls the apropriate voxel manipulation function.
-void altervoxel(int x, int y, int z, int state) {
+/**
+ * In some effect we want to just take bool and write it to a voxel
+ *
+ * this function calls the apropriate voxel manipulation function.
+ * 
+ * @param   The cube coordenates
+ * @param   The state of voxel
+ * @return  void
+ */
+void alter_voxel(int8_t x, int8_t y, int8_t z, int state) {
     if (state == 1) {
-        setvoxel(x, y, z);
+        set_voxel(x, y, z);
     } else {
-        clrvoxel(x, y, z);
+        clr_voxel(x, y, z);
     }
 }
 
-// Flip the state of a voxel.
-// If the voxel is 1, its turned into a 0, and vice versa.
-void flpvoxel(int x, int y, int z) {
-    if (inrange(x, y, z)) {
+/**
+ * Flip the state of a voxel.
+ *
+ * If the voxel is 1, its turned into a 0, and vice versa.
+ * 
+ * @param   The cube coordenates
+ * @return  void
+ */
+void flp_voxel(int8_t x, int8_t y, int8_t z) {
+    if (in_range(x, y, z)) {
         cube[z][y] ^= (1 << x);
     }
 }
 
-// Makes sure x1 is alwas smaller than x2
-// This is usefull for functions that uses for loops,
-// to avoid infinite loops
-void argorder(int ix1, int ix2, int *ox1, int *ox2) {
-    if (ix1 > ix2) {
+/**
+ * Makes sure x1 is alwas smaller than x2
+ * 
+ * This is usefull for functions that uses for loops,
+ * to avoid infinite loops
+ * 
+ * @param   Arguments and its corrsponding poiters
+ * @return  void
+ */
+void arg_order(int8_t i1, int8_t i2, int8_t *p1, int8_t *p2) {
+    if (i1 > i2) {
         int tmp;
-        tmp = ix1;
-        ix1 = ix2;
-        ix2 = tmp;
+        tmp = i1;
+        i1 = i2;
+        i2 = tmp;
     }
-    *ox1 = ix1;
-    *ox2 = ix2;
+    *p1 = i1;
+    *p2 = i2;
 }
 
-// Sets all voxels along a X/Y plane at a given point
-// on axis Z
-void setplane_z(int z) {
-    int i;
-    if (z >= 0 && z < CUBE_SIZE) {
+/**
+ * Sets all voxels along a X/Y plane at a given point on axis Z
+ * 
+ * @param   The point on Z axis
+ * @return  void
+ */
+void set_plane_z(int8_t point) {
+    uint8_t i;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (i = 0; i < CUBE_SIZE; i++) {
-            cube[z][i] = 0xff;
+            cube[point][i] = 0xff;
         }
     }
 }
 
-// Clears voxels in the same manner as above
-void clrplane_z(int z) {
-    int i;
-    if (z >= 0 && z < CUBE_SIZE) {
+/**
+ * Clear all voxels along a X/Y plane at a given point on axis Z
+ * 
+ * @param   The point on Z axis
+ * @return  void
+ */
+void clr_plane_z(int8_t point) {
+    uint8_t i;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (i = 0; i < CUBE_SIZE; i++) {
-            cube[z][i] = 0x00;
+            cube[point][i] = 0x00;
         }
     }
 }
 
-void setplane_x(int x) {
-    int z;
-    int y;
-    if (x >= 0 && x < CUBE_SIZE) {
+/**
+ * Sets all voxels along a Z/Y plane at a given point on axis X
+ * 
+ * @param   The point on X axis
+ * @return  void
+ */
+void set_plane_x(int8_t point) {
+    uint8_t z, y;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (z = 0; z < CUBE_SIZE; z++) {
             for (y = 0; y < CUBE_SIZE; y++) {
-                cube[z][y] |= (1 << x);
+                cube[z][y] |= (1 << point);
             }
         }
     }
 }
 
-void clrplane_x(int x) {
-    int z;
-    int y;
-    if (x >= 0 && x < CUBE_SIZE) {
+/**
+ * Clears all voxels along a Z/Y plane at a given point on axis X
+ * 
+ * @param   The point on X axis
+ * @return  void
+ */
+void clr_plane_x(int8_t point) {
+    uint8_t z, y;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (z = 0; z < CUBE_SIZE; z++) {
             for (y = 0; y < CUBE_SIZE; y++) {
-                cube[z][y] &= ~(1 << x);
+                cube[z][y] &= ~(1 << point);
             }
         }
     }
 }
 
-void setplane_y(int y) {
-    int z;
-    if (y >= 0 && y < CUBE_SIZE) {
+/**
+ * Sets all voxels along a X/Z plane at a given point on axis Y
+ * 
+ * @param   The point on Y axis
+ * @return  void
+ */
+void set_plane_y(int8_t point) {
+    uint8_t z;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (z = 0; z < CUBE_SIZE; z++) {
-            cube[z][y] = 0xff;
+            cube[z][point] = 0xff;
         }
     }
 }
 
-void clrplane_y(int y) {
-    int z;
-    if (y >= 0 && y < CUBE_SIZE) {
+/**
+ * Clears all voxels along a X/Z plane at a given point on axis Y
+ * 
+ * @param   The point on Y axis
+ * @return  void
+ */
+void clr_plane_y(int8_t point) {
+    uint8_t z;
+    if (point >= 0 && point < CUBE_SIZE) {
         for (z = 0; z < CUBE_SIZE; z++) {
-            cube[z][y] = 0x00;
+            cube[z][point] = 0x00;
         }
     }
 }
 
-void setplane(char axis, unsigned char i) {
+/**
+ * Sets all voxels along a given plane and point
+ * 
+ * @param   The axis
+ * @param   The point on axis
+ * @return  void
+ */
+void set_plane(char axis, int8_t point) {
     switch (axis) {
         case AXIS_X:
-            setplane_x(i);
+            set_plane_x(point);
             break;
 
         case AXIS_Y:
-            setplane_y(i);
+            set_plane_y(point);
             break;
 
         case AXIS_Z:
-            setplane_z(i);
+            set_plane_z(point);
             break;
     }
 }
 
-void clrplane(char axis, unsigned char i) {
+/**
+ * Clears all voxels along a given plane and point
+ * 
+ * @param   The axis
+ * @param   The point on axis
+ * @return  void
+ */
+void clr_plane(char axis, int8_t point) {
     switch (axis) {
         case AXIS_X:
-            clrplane_x(i);
+            clr_plane_x(point);
             break;
 
         case AXIS_Y:
-            clrplane_y(i);
+            clr_plane_y(point);
             break;
 
         case AXIS_Z:
-            clrplane_z(i);
+            clr_plane_z(point);
             break;
     }
 }
 
-// Fill a value into all 64 byts of the cube buffer
-// Mostly used for clearing. fill(0x00)
-// or setting all on. fill(0xff)
-void fill(unsigned char pattern) {
-    int z;
-    int y;
+/**
+ * Fill a value into all 64 byts of the cube buffer
+ * 
+ * Mostly used for clearing. fill(0x00) or setting all on. fill(0xff)
+ * 
+ * @param   The pattern
+ * @return  void
+ */
+void fill(uint8_t pattern) {
+    uint8_t z, y;
     for (z = 0; z < CUBE_SIZE; z++) {
         for (y = 0; y < CUBE_SIZE; y++) {
             cube[z][y] = pattern;
@@ -208,41 +309,56 @@ void fill(unsigned char pattern) {
     }
 }
 
-void tmpfill(unsigned char pattern) {
-    int z;
-    int y;
+/**
+ * Fill a value into all 64 byts of the temp cube buffer
+ * 
+ * Mostly used for clearing. fill(0x00) or setting all on. fill(0xff)
+ * 
+ * @param   The pattern
+ * @return  void
+ */
+void fb_fill(uint8_t pattern) {
+    uint8_t z, y;
     for (z = 0; z < CUBE_SIZE; z++) {
         for (y = 0; y < CUBE_SIZE; y++) {
-            fb[z][y] = pattern;
+            fb_cube[z][y] = pattern;
         }
     }
 }
 
-// Draw a box with all walls drawn and all voxels inside set
-void box_filled(int x1, int y1, int z1, int x2, int y2, int z2) {
-    int iy;
-    int iz;
-    argorder(x1, x2, &x1, &x2);
-    argorder(y1, y2, &y1, &y2);
-    argorder(z1, z2, &z1, &z2);
+/**
+ * Draw a box with all walls drawn and all voxels inside set
+ * 
+ * @param   Two coordenates on the cube
+ * @return  void
+ */
+void box_filled(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
+    int8_t iy, iz;
+    arg_order(x1, x2, &x1, &x2);
+    arg_order(y1, y2, &y1, &y2);
+    arg_order(z1, z2, &z1, &z2);
     for (iz = z1; iz <= z2; iz++) {
         for (iy = y1; iy <= y2; iy++) {
-            cube[iz % CUBE_SIZE][iy % CUBE_SIZE] |= byteline(x1, x2);
+            cube[iz % CUBE_SIZE][iy % CUBE_SIZE] |= byte_line(x1, x2);
         }
     }
 }
 
-// Darw a hollow box with side walls.
-void box_walls(int x1, int y1, int z1, int x2, int y2, int z2) {
-    int iy;
-    int iz;
-    argorder(x1, x2, &x1, &x2);
-    argorder(y1, y2, &y1, &y2);
-    argorder(z1, z2, &z1, &z2);
+/**
+ * Darw a hollow box with side walls.
+ * 
+ * @param   Two coordenates on the cube
+ * @return  void
+ */
+void box_walls(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
+    int8_t iy, iz;
+    arg_order(x1, x2, &x1, &x2);
+    arg_order(y1, y2, &y1, &y2);
+    arg_order(z1, z2, &z1, &z2);
     for (iz = z1; iz <= z2; iz++) {
         for (iy = y1; iy <= y2; iy++) {
             if (iy == y1 || iy == y2 || iz == z1 || iz == z2) {
-                cube[iz % CUBE_SIZE][iy % CUBE_SIZE] = byteline(x1, x2);
+                cube[iz % CUBE_SIZE][iy % CUBE_SIZE] = byte_line(x1, x2);
             } else {
                 cube[iz % CUBE_SIZE][iy % CUBE_SIZE] |= ((0x01 << x1) | (0x01 << x2));
             }
@@ -250,42 +366,50 @@ void box_walls(int x1, int y1, int z1, int x2, int y2, int z2) {
     }
 }
 
-// Draw a wireframe box. This only draws the corners and edges,
-// no walls.
-void box_wireframe(int x1, int y1, int z1, int x2, int y2, int z2) {
-    int iy;
-    int iz;
-    argorder(x1, x2, &x1, &x2);
-    argorder(y1, y2, &y1, &y2);
-    argorder(z1, z2, &z1, &z2);
+/**
+ * Draw a wireframe box. This only draws the corners and edges, no walls.
+ *
+ * @param   Two coordenates on the cube
+ * @return  void
+ */
+void box_wireframe(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
+    int8_t iy, iz;
+    arg_order(x1, x2, &x1, &x2);
+    arg_order(y1, y2, &y1, &y2);
+    arg_order(z1, z2, &z1, &z2);
 
     // Lines along X axis
-    cube[z1][y1] = byteline(x1, x2);
-    cube[z1][y2] = byteline(x1, x2);
-    cube[z2][y1] = byteline(x1, x2);
-    cube[z2][y2] = byteline(x1, x2);
+    cube[z1][y1] = byte_line(x1, x2);
+    cube[z1][y2] = byte_line(x1, x2);
+    cube[z2][y1] = byte_line(x1, x2);
+    cube[z2][y2] = byte_line(x1, x2);
 
     // Lines along Y axis
     for (iy = y1; iy <= y2; iy++) {
-        setvoxel(x1, iy, z1);
-        setvoxel(x1, iy, z2);
-        setvoxel(x2, iy, z1);
-        setvoxel(x2, iy, z2);
+        set_voxel(x1, iy, z1);
+        set_voxel(x1, iy, z2);
+        set_voxel(x2, iy, z1);
+        set_voxel(x2, iy, z2);
     }
 
     // Lines along Z axis
     for (iz = z1; iz <= z2; iz++) {
-        setvoxel(x1, y1, iz);
-        setvoxel(x1, y2, iz);
-        setvoxel(x2, y1, iz);
-        setvoxel(x2, y2, iz);
+        set_voxel(x1, y1, iz);
+        set_voxel(x1, y2, iz);
+        set_voxel(x2, y1, iz);
+        set_voxel(x2, y2, iz);
     }
 }
 
-// Flips a byte 180 degrees.
-// MSB becomes LSB, LSB becomes MSB.
-
-char flipbyte(char byte) {
+/**
+ * Flips a byte 180 degrees.
+ * 
+ * MSB becomes LSB, LSB becomes MSB.
+ * 
+ * @param   A byte to be flipped
+ * @return  The flipped byte
+ */
+char flip_byte(char byte) {
     char flop = 0x00;
     flop = (flop & 0b11111110) | (0b00000001 & (byte >> 7));
     flop = (flop & 0b11111101) | (0b00000010 & (byte >> 5));
@@ -298,16 +422,22 @@ char flipbyte(char byte) {
     return flop;
 }
 
-// Draw a line between any coordinates in 3d space.
-// Uses integer values for input, so dont expect smooth animations.
-void line(int x1, int y1, int z1, int x2, int y2, int z2) {
+/**
+ * Draw a line between any coordinates in 3d space.
+ * 
+ * Uses integer values for input, so dont expect smooth animations.
+ * 
+ * @param   Two coordenates on the cube
+ * @return  void
+ */
+void line(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
 
     // how many voxels do we move on the y axis for each step on the x axis
     float xy;
     float xz;
 
-    unsigned char x, y, z;
-    unsigned char lasty, lastz;
+    int8_t x, y, z;
+    int8_t lasty, lastz;
 
     // We always want to draw the line from x=0 to x=7.
     // If x1 is bigget than x2, we need to flip all the values.
@@ -344,23 +474,35 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2) {
     for (x = x1; x <= x2; x++) {
         y = (xy * (x - x1)) + y1;
         z = (xz * (x - x1)) + z1;
-        setvoxel(x, y, z);
+        set_voxel(x, y, z);
     }
 }
 
-// Copies the contents of fb (temp cube buffer) into the rendering buffer
-void tmp2cube() {
-    memcpy(cube, fb, 64); // copy the current cube into a buffer.
+/**
+ * Copies the contents of fb (temp cube buffer) into the rendering buffer
+ * 
+ * @param   void
+ * @return  void
+ */
+void fb_to_cube() {
+    memcpy(cube, fb_cube, 64); // copy the current cube into a buffer.
 }
 
-// Shift the entire contents of the cube along an axis
-// This is great for effects where you want to draw something
-// on one side of the cube and have it flow towards the other
-// side. Like rain flowing down the Z axiz.
-void shift(char axis, int direction) {
-    int i, x, y;
-    int ii, iii;
-    int state;
+/**
+ * Shift the entire contents of the cube along an axis
+ * 
+ * This is great for effects where you want to draw something
+ * on one side of the cube and have it flow towards the other
+ * side. Like rain flowing down the Z axiz.
+ * 
+ * @param   The axis
+ * @param   The direction of the shift
+ * @return  void
+ */
+void shift(char axis, int8_t direction) {
+    uint8_t i, x, y;
+    uint8_t ii, iii;
+    uint8_t state;
 
     for (i = 0; i < CUBE_SIZE; i++) {
         if (direction == -1) {
@@ -378,18 +520,18 @@ void shift(char axis, int direction) {
                 }
 
                 if (axis == AXIS_Z) {
-                    state = getvoxel(x, y, iii);
-                    altervoxel(x, y, ii, state);
+                    state = get_voxel(x, y, iii);
+                    alter_voxel(x, y, ii, state);
                 }
 
                 if (axis == AXIS_Y) {
-                    state = getvoxel(x, iii, y);
-                    altervoxel(x, ii, y, state);
+                    state = get_voxel(x, iii, y);
+                    alter_voxel(x, ii, y, state);
                 }
 
                 if (axis == AXIS_X) {
-                    state = getvoxel(iii, y, x);
-                    altervoxel(ii, y, x, state);
+                    state = get_voxel(iii, y, x);
+                    alter_voxel(ii, y, x, state);
                 }
             }
         }
@@ -404,22 +546,27 @@ void shift(char axis, int direction) {
     for (x = 0; x < CUBE_SIZE; x++) {
         for (y = 0; y < CUBE_SIZE; y++) {
             if (axis == AXIS_Z) {
-                clrvoxel(x, y, i);
+                clr_voxel(x, y, i);
             }
             if (axis == AXIS_Y) {
-                clrvoxel(x, i, y);
+                clr_voxel(x, i, y);
             }
             if (axis == AXIS_X) {
-                clrvoxel(i, y, x);
+                clr_voxel(i, y, x);
             }
         }
     }
 }
 
-// Flip the cube 180 degrees along the y axis.
+/**
+ * Flips the cube 180 degrees along the y axis.
+ * 
+ * @param   void
+ * @return  void
+ */
 void mirror_y() {
-    unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
-    unsigned char x, y, z;
+    uint8_t buffer[CUBE_SIZE][CUBE_SIZE];
+    uint8_t x, y, z;
     
     // copy the current cube into a buffer.
     memcpy(buffer, cube, CUBE_BYTES);
@@ -428,17 +575,22 @@ void mirror_y() {
         for (y = 0; y < CUBE_SIZE; y++) {
             for (x = 0; x < CUBE_SIZE; x++) {
                 if (buffer[z][y] & (0x01 << x)) {
-                    setvoxel(x, CUBE_SIZE - 1 - y, z);
+                    set_voxel(x, CUBE_SIZE - 1 - y, z);
                 }
             }
         }
     }
 }
 
-// Flip the cube 180 degrees along the x axis
+/**
+ * Flips the cube 180 degrees along the x axis
+ * 
+ * @param   void
+ * @return  void
+ */
 void mirror_x() {
-    unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
-    unsigned char y, z;
+    uint8_t buffer[CUBE_SIZE][CUBE_SIZE];
+    uint8_t y, z;
     
     // copy the current cube into a buffer.
     memcpy(buffer, cube, CUBE_BYTES);
@@ -447,15 +599,20 @@ void mirror_x() {
         for (y = 0; y < CUBE_SIZE; y++) {
 
             // This will break with different buffer sizes..
-            cube[z][y] = flipbyte(buffer[z][y]);
+            cube[z][y] = flip_byte(buffer[z][y]);
         }
     }
 }
 
-// flip the cube 180 degrees along the z axis
+/**
+ * Flips the cube 180 degrees along the z axis
+ * 
+ * @param   void
+ * @return  void
+ */
 void mirror_z() {
-    unsigned char buffer[CUBE_SIZE][CUBE_SIZE];
-    unsigned char z, y;
+    uint8_t buffer[CUBE_SIZE][CUBE_SIZE];
+    uint8_t z, y;
     
     // copy the current cube into a buffer.
     memcpy(buffer, cube, CUBE_BYTES);

@@ -18,7 +18,7 @@ void effect_test(void) {
         for(i = 0; i < 100; i++) {
             x = sinf(i / 8) * 2 + 3.5;
             y = cosf(i / 8) * 2 + 3.5;
-            setvoxel(x, y, z);
+            set_voxel(x, y, z);
             delay_ms(100);
             fill(0x00);
         }
@@ -32,13 +32,13 @@ void effect_planboing(int plane, int speed) {
     int i;
     for (i = 0; i < 8; i++) {
         fill(0x00);
-        setplane(plane, i);
+        set_plane(plane, i);
         delay_ms(speed);
     }
 
     for (i = 7; i >= 0; i--) {
         fill(0x00);
-        setplane(plane, i);
+        set_plane(plane, i);
         delay_ms(speed);
     }
 }
@@ -132,12 +132,12 @@ void sendvoxel_z(unsigned char x, unsigned char y, unsigned char z, int delay) {
     for (i = 0; i < 8; i++) {
         if (z == 7) {
             ii = 7 - i;
-            clrvoxel(x, y, ii + 1);
+            clr_voxel(x, y, ii + 1);
         } else {
             ii = i;
-            clrvoxel(x, y, ii - 1);
+            clr_voxel(x, y, ii - 1);
         }
-        setvoxel(x, y, ii);
+        set_voxel(x, y, ii);
         delay_ms(delay);
     }
 }
@@ -151,13 +151,13 @@ void effect_sendplane_rand_z(unsigned char z, int delay, int wait) {
     unsigned char loop = 16;
     unsigned char x, y;
     fill(0x00);
-    setplane_z(z);
+    set_plane_z(z);
     
     // Send voxels at random untill all 16 have crossed the cube.
     while (loop) {
         x = rand() % 4;
         y = rand() % 4;
-        if (getvoxel(x, y, z)) {
+        if (get_voxel(x, y, z)) {
     
             // Send the voxel flying
             sendvoxel_z(x, y, z, delay);
@@ -183,7 +183,7 @@ void effect_sendvoxels_rand_z(int iterations, int delay, int wait) {
     
             // Then set a voxel either at the top or at the bottom
             // rand()%2 returns either 0 or 1. multiplying by 7 gives either 0 or 7.
-            setvoxel(x, y, ((rand() % 2)*7));
+            set_voxel(x, y, ((rand() % 2)*7));
         }
     }
 
@@ -197,7 +197,7 @@ void effect_sendvoxels_rand_z(int iterations, int delay, int wait) {
         if (y != last_y && x != last_x) {
         
             // If the voxel at this x,y is at the bottom
-            if (getvoxel(x, y, 0)) {
+            if (get_voxel(x, y, 0)) {
         
                 // send it to the top
                 sendvoxel_z(x, y, 0, delay);
@@ -488,13 +488,13 @@ void effect_boingboing(uint16_t iterations, int delay, unsigned char mode, unsig
 
         // show one voxel at time
         if (drawmode == 0x01) {
-            setvoxel(x, y, z);
+            set_voxel(x, y, z);
             delay_ms(delay);
-            clrvoxel(x, y, z);
+            clr_voxel(x, y, z);
             
         // flip the voxel in question
         } else if (drawmode == 0x02) {
-            flpvoxel(x, y, z);
+            flp_voxel(x, y, z);
             delay_ms(delay);
         }
         
@@ -509,11 +509,11 @@ void effect_boingboing(uint16_t iterations, int delay, unsigned char mode, unsig
             snake[0][1] = y;
             snake[0][2] = z;
             for (i = 0; i < 8; i++) {
-                setvoxel(snake[i][0], snake[i][1], snake[i][2]);
+                set_voxel(snake[i][0], snake[i][1], snake[i][2]);
             }
             delay_ms(delay);
             for (i = 0; i < 8; i++) {
-                clrvoxel(snake[i][0], snake[i][1], snake[i][2]);
+                clr_voxel(snake[i][0], snake[i][1], snake[i][2]);
             }
         }
         iterations--;
@@ -537,8 +537,8 @@ void effect_random_filler(int delay, int state) {
         x = rand() % 8;
         y = rand() % 8;
         z = rand() % 8;
-        if ((state == 0 && getvoxel(x, y, z) == 0x01) || (state == 1 && getvoxel(x, y, z) == 0x00)) {
-            altervoxel(x, y, z, state);
+        if ((state == 0 && get_voxel(x, y, z) == 0x01) || (state == 1 && get_voxel(x, y, z) == 0x00)) {
+            alter_voxel(x, y, z, state);
             delay_ms(delay);
             loop++;
         }
@@ -557,7 +557,7 @@ void effect_rain(int iterations) {
         for (i = 0; i < rnd_num; i++) {
             rnd_x = rand() % 8;
             rnd_y = rand() % 8;
-            setvoxel(rnd_x, rnd_y, 7);
+            set_voxel(rnd_x, rnd_y, 7);
         }
         delay_ms(1000);
         shift(AXIS_Z, -1);
@@ -667,13 +667,13 @@ void draw_positions_axis(char axis, unsigned char positions[64], int invert) {
                 p = positions[(x * 8) + y];
             }
             if (axis == AXIS_Z) {
-                setvoxel(x, y, p);
+                set_voxel(x, y, p);
             }
             if (axis == AXIS_Y) {
-                setvoxel(x, p, y);
+                set_voxel(x, p, y);
             }
             if (axis == AXIS_X) {
-                setvoxel(p, y, x);
+                set_voxel(p, y, x);
             }
         }
     }
@@ -765,7 +765,7 @@ void effect_random_sparkle_flash(int iterations, int voxels, int delay) {
     int v;
     for (i = 0; i < iterations; i++) {
         for (v = 0; v <= voxels; v++) {
-            setvoxel(rand() % CUBE_SIZE, rand() % CUBE_SIZE, rand() % CUBE_SIZE);
+            set_voxel(rand() % CUBE_SIZE, rand() % CUBE_SIZE, rand() % CUBE_SIZE);
         }
         delay_ms(delay);
         fill(0x00);
@@ -835,13 +835,13 @@ void effect_wormsqueeze(int size, int axis, int direction, int iterations, int d
         for (j = 0; j < size; j++) {
             for (k = 0; k < size; k++) {
                 if (axis == AXIS_Z) {
-                    setvoxel(x + j, y + k, origin);
+                    set_voxel(x + j, y + k, origin);
                 }
                 if (axis == AXIS_Y) {
-                    setvoxel(x + j, origin, y + k);
+                    set_voxel(x + j, origin, y + k);
                 }
                 if (axis == AXIS_X) {
-                    setvoxel(origin, y + j, x + k);
+                    set_voxel(origin, y + j, x + k);
                 }
             } 
         }
@@ -857,7 +857,7 @@ void effect_bit_walking() {
         for(y = 0; y < 8; y++) {
             for(z = 0; z < 8; z++) {
                 fill(0x00);
-                setvoxel(x, y, z);
+                set_voxel(x, y, z);
                 delay_ms(100);
             }
         }
@@ -878,7 +878,7 @@ void effect_lines() {
         for(y = 0; y < 8; y++) {
             for(z = 0; z < 8; z++) {
                 fill(0x00);
-                setvoxel(x, y, z);
+                set_voxel(x, y, z);
             }
         }
     }*/
@@ -901,7 +901,7 @@ void effect_ripples(unsigned char iterations, unsigned char delay) {
                 //distance = distance2d(3.5,3.5,x,y);
                 ripple_interval = 1.3;
                 height = 4 + sinf(distance / ripple_interval + (float) i / 5) * 4;
-                setvoxel(x, y, (int) height);
+                set_voxel(x, y, (int) height);
             }
         }
         //delay_ms(delay);
@@ -923,9 +923,9 @@ void send_char(char *char_data) {
     for(l = 7; l >= 0; l--) {
         for(byte_index = 4; byte_index >= 0; byte_index--) {
             if(char_data[byte_index] & (1 << (7 - l))) {
-                setvoxel(2 + byte_index, 0, l);
+                set_voxel(2 + byte_index, 0, l);
             } else {
-                clrvoxel(2 + byte_index, 0, l);
+                clr_voxel(2 + byte_index, 0, l);
             }
         }
     }

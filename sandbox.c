@@ -15,9 +15,9 @@ void send_char2(char *char_data) {
     for(l = 7; l >= 0; l--) {
         for(byte_index = 4; byte_index >= 0; byte_index--) {
             if(char_data[byte_index] & (1 << (7 - l))) {
-                setvoxel(2 + byte_index, 0, l);
+                set_voxel(2 + byte_index, 0, l);
             } else {
-                clrvoxel(2 + byte_index, 0, l);
+                clr_voxel(2 + byte_index, 0, l);
             }
         }
     }

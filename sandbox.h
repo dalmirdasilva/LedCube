@@ -14,14 +14,14 @@ void send_char2(char *char_data);
 void shift_cube(uint8_t iterations);
 void effect_str_fly();
 
-char byteline(int start, int end) {
+char byte_line(int start, int end) {
     return ((0xff << start) & ~(0xff << (end + 1)));
 }
 
-void setvoxel(int x, int y, int z) {
+void set_voxel(int8_t x, int8_t y, int8_t z) {
     cube[z][y] |= (1 << x);
 }
 
-void clrvoxel(int x, int y, int z) {
+void clr_voxel(int8_t x, int8_t y, int8_t z) {
     cube[z][y] &= ~(1 << x);
 }
