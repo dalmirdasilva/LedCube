@@ -7,7 +7,7 @@
  * @param   delay
  * @return  void
  */
-void effect_box_shrink_grow(uint8_t iterations, uint8_t rot, uint8_t flip, uint16_t delay) {
+void effect_box_shrink_grow(uint8_t iterations, uint8_t rotation, uint8_t flip, uint16_t delay) {
     uint8_t it, i;
     int8_t xyz;
     for (it = 0; it < iterations; it++) {
@@ -28,10 +28,10 @@ void effect_box_shrink_grow(uint8_t iterations, uint8_t rot, uint8_t flip, uint1
             if (flip > 0) {
                 mirror_z();
             }
-            if (rot == 1 || rot == 3) {
+            if (rotation == 1 || rotation == 3) {
                 mirror_y();
             }
-            if (rot == 2 || rot == 3) {
+            if (rotation == 2 || rotation == 3) {
                 mirror_x();
             }
 

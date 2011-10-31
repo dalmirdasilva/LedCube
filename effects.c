@@ -74,24 +74,8 @@ void effect_blinky2() {
     #include "effects/box_shrink_grow.c"
 #endif
 
-// Creates a wireframe box that shrinks or grows out from the center of the cube.
+// Creates a wireframe box that shrinks and grows out from the center of the cube.
 #if EFFECT_BOX_WOOP_WOOP == 1
-void effect_box_woop_woop(uint8_t iterations, uint16_t delay) {
-    uint8_t it, i, j, a, b;
-    uint8_t half = CUBE_SIZE / 2;
-    fill(0x00);
-    for (i = 0; i < half; i++) {
-        j = i;
-        if (grow > 0) {
-            j = half - 1 - i;
-        }
-        a = half + j;
-        b = half - j;
-        box_wire_frame(a, a, a, b, b, b);
-        delay_ms(delay);
-        fill(0x00);
-    }
-}
 #endif
 
 // Send a voxel flying from one side of the cube to the other
