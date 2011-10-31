@@ -71,53 +71,23 @@ void effect_blinky2() {
 #endif
 
 #if EFFECT_BOX_SHRING_GROW == 1
-void effect_box_shrink_grow(int iterations, int rot, int flip, uint16_t delay) {
-    int x, i, xyz;
-    for (x = 0; x < iterations; x++) {
-        for (i = 0; i < 16; i++) {
-            xyz = 7 - i; // This reverses counter i between 0 and 7.
-            if (i > 7) {
-                xyz = i - 8; // at i > 7, i 8-15 becomes xyz 0-7.
-            }
-            fill(0x00);
-            delay_ms(1);
-
-            // disable interrupts while the cube is being rotated
-            INTCONbits.GIE = 0;
-
-            box_wireframe(0, 0, 0, xyz, xyz, xyz);
-
-            // upside-down
-            if (flip > 0) {
-                mirror_z();
-            }
-            if (rot == 1 || rot == 3) {
-                mirror_y();
-            }
-            if (rot == 2 || rot == 3) {
-                mirror_x();
-            }
-
-            // enable interrupts
-            INTCONbits.GIE = 1;
-            delay_ms(delay);
-            fill(0x00);
-        }
-    }
-}
+    #include "effects/box_shrink_grow.c"
 #endif
 
 // Creates a wireframe box that shrinks or grows out from the center of the cube.
-#if EFFECT_BOX_WOOPWOOP == 1
-void effect_box_woopwoop(int delay, int grow) {
-    int i, ii;
+#if EFFECT_BOX_WOOP_WOOP == 1
+void effect_box_woop_woop(uint8_t iterations, uint16_t delay) {
+    uint8_t it, i, j, a, b;
+    uint8_t half = CUBE_SIZE / 2;
     fill(0x00);
-    for (i = 0; i < 4; i++) {
-        ii = i;
+    for (i = 0; i < half; i++) {
+        j = i;
         if (grow > 0) {
-            ii = 3 - i;
+            j = half - 1 - i;
         }
-        box_wireframe(4 + ii, 4 + ii, 4 + ii, 3 - ii, 3 - ii, 3 - ii);
+        a = half + j;
+        b = half - j;
+        box_wire_frame(a, a, a, b, b, b);
         delay_ms(delay);
         fill(0x00);
     }
@@ -547,22 +517,7 @@ void effect_random_filler(int delay, int state) {
 #endif
 
 #if EFFECT_RAIN == 1
-void effect_rain(int iterations) {
-    int i, ii;
-    int rnd_x;
-    int rnd_y;
-    int rnd_num;
-    for (ii = 0; ii < iterations; ii++) {
-        rnd_num = rand() % 4;
-        for (i = 0; i < rnd_num; i++) {
-            rnd_x = rand() % 8;
-            rnd_y = rand() % 8;
-            set_voxel(rnd_x, rnd_y, 7);
-        }
-        delay_ms(1000);
-        shift(AXIS_Z, -1);
-    }
-}
+    #include "effects/rain.c"
 #endif
 
 #if EFFECT_Z_UPDOWN == 1
@@ -739,23 +694,7 @@ void effect_boxside_randsend_parallel(char axis, int origin, int delay, int mode
 // Light all leds layer by layer,
 // then unset layer by layer
 #if EFFECT_LOADBAR == 1
-void effect_loadbar(int delay) {
-    int z, y;
-    fill(0x00);
-    for (z = 0; z < 8; z++) {
-        for (y = 0; y < 8; y++) {
-            cube[z][y] = 0xff;
-        }
-        delay_ms(delay);
-    }
-    delay_ms(delay * 3);
-    for (z = 0; z < 8; z++) {
-        for (y = 0; y < 8; y++) {
-            cube[z][y] = 0x00;
-        }
-        delay_ms(delay);
-    }
-}
+    #include "effects/load_bar.c"
 #endif
 
 // Set n number of voxels at random positions
@@ -811,8 +750,8 @@ void effect_telcstairs(int invert, int delay, int val) {
 }
 #endif
 
-#if EFFECT_WORMSQUEEZE == 1
-void effect_wormsqueeze(int size, int axis, int direction, int iterations, int delay) {
+#if EFFECT_WORM_SQUEEZE == 1
+void effect_worm_squeeze(int size, int axis, int direction, int iterations, int delay) {
     int x, y, i, j, k, dx, dy;
     int cube_size;
     int origin = 0;
@@ -944,38 +883,7 @@ void effect_str_fly() {
 #endif
 
 #if EFFECT_CLOSING_BOX == 1
-void effect_closing_box() {
-int8_t i, j;
-    fill(0x00);
-    for(j = 0; j < 8; j++) {
-		cube[0][j] |= 0xff;
-		delay_ms(1000);
-	}
-    for(i = 0; i < 8; i++) {
-		cube[i][0] = 0xff;
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x01;
-		}
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		cube[i][7] = 0xff;
-		delay_ms(1000);
-    }
-    for(i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
-			cube[i][j] |= 0x80;
-		}
-		delay_ms(1000);
-    }
-	for(j = 0; j < 8; j++) {
-		cube[7][j] |= 0xff;
-		delay_ms(1000);
-	}
-}
+    #include "effects/closing_box.c"
 #endif
 
 

@@ -372,7 +372,7 @@ void box_walls(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2)
  * @param   Two coordenates on the cube
  * @return  void
  */
-void box_wireframe(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
+void box_wire_frame(int8_t x1, int8_t y1, int8_t z1, int8_t x2, int8_t y2, int8_t z2) {
     int8_t iy, iz;
     arg_order(x1, x2, &x1, &x2);
     arg_order(y1, y2, &y1, &y2);

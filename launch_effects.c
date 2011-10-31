@@ -29,7 +29,7 @@ void launch_effects() {
 
 #if EFFECT_RAIN == 1
     clear_and_wait();
-    effect_rain(100);
+    effect_rain(100, 5);
 #endif
 
 #if EFFECT_SENDVOXELS_RZ == 1
@@ -56,16 +56,13 @@ void launch_effects() {
 #if EFFECT_BOX_SHRING_GROW == 1
     clear_and_wait();
     for(k = 0; k < 8; k++) {
-        effect_box_shrink_grow(1, k % 4, k & 0x04, 450);
+        effect_box_shrink_grow(1, k % 0x04, k & 0x04, 450);
     }
 #endif
 
-#if EFFECT_BOX_WOOPWOOP == 1
+#if EFFECT_BOX_WOOP_WOOP == 1
     clear_and_wait();
-    effect_box_woopwoop(800, 0);
-    effect_box_woopwoop(800, 1);
-    effect_box_woopwoop(800, 0);
-    effect_box_woopwoop(800, 1);
+    effect_box_woop_woop(4, 800);
 #endif
 
 #if EFFECT_PLANBOING == 1
@@ -83,9 +80,9 @@ void launch_effects() {
     effect_loadbar(700);
 #endif
 
-#if EFFECT_WORMSQUEEZE == 1
+#if EFFECT_WORM_SQUEEZE == 1
     clear_and_wait();
-    effect_wormsqueeze(1, AXIS_Z, 1, 100, 1000);
+    effect_worm_squeeze(1, AXIS_Z, 1, 100, 1000);
 #endif
 
 #if EFFECT_BOXSIDE_RAND_SEND == 1
