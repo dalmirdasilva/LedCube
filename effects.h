@@ -15,7 +15,7 @@ void effect_box_woop_woop(uint8_t delay, uint8_t grow);
 void sendvoxel_z(unsigned char x, unsigned char y, unsigned char z, int delay);
 void effect_sendplane_rand_z(unsigned char z, int delay, int wait);
 void effect_sendvoxels_rand_z(int iterations, int delay, int wait);
-void effect_boingboing(uint16_t iterations, int delay, unsigned char mode, unsigned char drawmode);
+void effect_boing_boing(uint16_t iterations, uint16_t delay, uint8_t mode, uint8_t draw_mode);
 void effect_random_filler(int delay, int state);
 void effect_rain(uint8_t iterations, uint8_t drops);
 void effect_z_updown(int iterations, int delay);

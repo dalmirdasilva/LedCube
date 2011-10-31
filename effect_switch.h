@@ -13,7 +13,7 @@
 #define EFFECT_BLINKY                1 // blinking and fast
 #define EFFECT_BOX_SHRING_GROW       1 // corner
 #define EFFECT_BOX_WOOPWOOP          1 // center
-#define EFFECT_BOINGBOING            1 // making random lines
+#define EFFECT_BOING_BOING            1 // making random lines
 #define EFFECT_Z_UPDOWN              0 // lines up down
 #define EFFECT_AXIS_UPDOWN_RSUSPEND  1 // good
 #define EFFECT_BOXSIDE_RAND_SEND     0 // good

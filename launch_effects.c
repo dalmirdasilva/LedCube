@@ -118,9 +118,9 @@ void launch_effects() {
     effect_axis_updown_randsuspend(AXIS_Y, 550, 5000, 1);
 #endif
 
-#if EFFECT_BOINGBOING == 1
+#if EFFECT_BOING_BOING == 1
     clear_and_wait();
-    effect_boingboing(250, 600, 0x01, 0x02);
+    effect_boing_boing(250, 600, 0x01, 0x02);
 #endif
 
 #if EFFECT_SPARKLE == 1
