@@ -7,8 +7,8 @@
 void effect_rain(uint8_t iterations, uint8_t drops) {
     uint8_t i, it, rnd_x, rnd_y, rnd_num;
     for (it = 0; it < iterations; it++) {
-        srand(it);
-        rnd_num = rand() % drops;
+        //srand(it);
+        rnd_num = rand() % 4;
         for (i = 0; i < rnd_num; i++) {
             rnd_x = rand() % 8;
             rnd_y = rand() % 8;

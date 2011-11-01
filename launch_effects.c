@@ -62,7 +62,7 @@ void launch_effects() {
 
 #if EFFECT_BOX_WOOP_WOOP == 1
     clear_and_wait();
-    effect_box_woop_woop(4, 800);
+    effect_box_woop_woop(6, 800);
 #endif
 
 #if EFFECT_PLANBOING == 1
@@ -120,7 +120,9 @@ void launch_effects() {
 
 #if EFFECT_BOING_BOING == 1
     clear_and_wait();
+    effect_boing_boing(250, 600, 0x01, 0x01);
     effect_boing_boing(250, 600, 0x01, 0x02);
+    effect_boing_boing(250, 600, 0x01, 0x03);
 #endif
 
 #if EFFECT_SPARKLE == 1

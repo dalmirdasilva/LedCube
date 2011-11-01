@@ -76,6 +76,7 @@ void effect_blinky2() {
 
 // Creates a wireframe box that shrinks and grows out from the center of the cube.
 #if EFFECT_BOX_WOOP_WOOP == 1
+    #include "effects/box_woop_woop.c"
 #endif
 
 // Send a voxel flying from one side of the cube to the other

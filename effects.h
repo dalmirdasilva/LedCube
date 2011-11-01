@@ -11,7 +11,7 @@ void effect_test(void);
 void effect_planboing(int plane, int speed);
 void effect_blinky2();
 void effect_box_shrink_grow(uint8_t iterations, uint8_t rot, uint8_t flip, uint16_t delay);
-void effect_box_woop_woop(uint8_t delay, uint8_t grow);
+void effect_box_woop_woop(uint8_t iterations, uint16_t delay);
 void sendvoxel_z(unsigned char x, unsigned char y, unsigned char z, int delay);
 void effect_sendplane_rand_z(unsigned char z, int delay, int wait);
 void effect_sendvoxels_rand_z(int iterations, int delay, int wait);
