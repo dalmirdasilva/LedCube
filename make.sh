@@ -20,7 +20,7 @@ cd $BUILD_DIR
 echo "Entering in the build dir (${BUILD_DIR})"
 
 echo -n "Compiling..."
-sdcc --opt-code-size $LKR $TARGET.c $INCLUDES $ARCH $CHIP
+sdcc --use-non-free --opt-code-size $LKR $TARGET.c $INCLUDES $ARCH $CHIP
 
 echo "ok."
 
